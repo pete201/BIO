@@ -1,6 +1,6 @@
 '''parking'''
 
-debug = False
+debug = True
 
 class cars():
     '''parameters for each car'''
@@ -95,3 +95,39 @@ print(pref_strings_list)
 
 # index starts from 0, so subtract 1 from requested preference item
 print('Requested string is:',pref_strings_list[preference_index-1])
+
+########################################
+# 3b
+########################################
+
+alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+preference_string = 'EECCGGAAAA'
+street_length = len(preference_string)
+# create a parked cars list of equal length to preference_string
+parked_cars = []
+for _ in preference_string:
+    parked_cars.append('')
+
+def letter_to_number(letter):
+    return alphabet.find(letter)
+
+def number_to_letter(num):
+    return alphabet[num]
+
+arrival_number = 0
+for each in preference_string:
+    # get position of arriving car's pref from alphabet
+    preferred_position = letter_to_number(each)
+    print(f'each = {each}; pref = {preferred_position}=')
+    # while we still have parking spaces left
+    while preferred_position < street_length:
+        # park in pref spot or next available spot
+        if parked_cars[preferred_position] == '':
+            parked_cars[preferred_position] = number_to_letter(arrival_number).lower()
+            # we are done so set pref posn = street length to satisfy while 
+            preferred_position = street_length
+        else: preferred_position += 1
+    arrival_number += 1
+    print(parked_cars)
+
+print(f'final parking arrangement is {parked_cars}')
