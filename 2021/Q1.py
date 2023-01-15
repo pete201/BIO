@@ -83,3 +83,4 @@ if is_a_pat(s1s2):
     print('main - S1S2 YES is a pat')
 else: print('main - S1S2 NO')
 exit()
+
