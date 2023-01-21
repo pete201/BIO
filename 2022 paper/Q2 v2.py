@@ -36,11 +36,11 @@ class hexagon():
         return rep
 
 class superhex(hexagon):
+    '''builds on hexagon class, returning [team,majority] for controlled hexagons'''
     def __init__(self) -> None:
         super().__init__()
 
     def get_controller(self):
-        #return super().get_controller()
         '''returns controlling team, majority; or "_" for none'''
         controller = "_"
         majority = 0
