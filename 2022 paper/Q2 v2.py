@@ -5,9 +5,9 @@
 
 # contants
 RED_MOVE_DISTANCE  = 2
-BLUE_MOVE_DISTANCE = 23
-SKIRMISHES = 28
-FEUDS = 0
+BLUE_MOVE_DISTANCE = 11
+SKIRMISHES = 0
+FEUDS = 1
 
 class hexagon():
     '''the building block of hive with 6 sides that can be set to red/blue'''
@@ -124,7 +124,6 @@ class hive():
         for hex in range (25):
             rep += str(self.hex_list[hex]) + "\n"
         return rep
-
 
 class bee():
     '''buzzes around the hive setting sides to it's team colour'''
