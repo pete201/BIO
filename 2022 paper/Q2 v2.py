@@ -15,13 +15,13 @@ class hexagon():
         self.hex_controller = None
         self.sides_list = []
         for n in range (6):
-            side = None
+            side = '_'
             self.sides_list.append(side)
 
 
     def get_controller(self):
         '''returns team with majority sides or None'''
-        controller = "None"
+        controller = "_"
         if self.sides_list.count("R") > self.sides_list.count("B"):
             controller = "R"
         if self.sides_list.count("B") > self.sides_list.count("R"):
