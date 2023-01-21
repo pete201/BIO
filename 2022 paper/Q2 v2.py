@@ -4,10 +4,10 @@
 # problem is I can't find a quick easy soln to find neighbors from a given hex (else a grid makes more sense)
 
 # contants
-RED_MOVE_DISTANCE  = 25
-BLUE_MOVE_DISTANCE = 15
-SKIRMISHES = 3
-FEUDS = 13
+RED_MOVE_DISTANCE  = 2
+BLUE_MOVE_DISTANCE = 23
+SKIRMISHES = 28
+FEUDS = 0
 
 class hexagon():
     '''the building block of hive with 6 sides that can be set to red/blue'''
@@ -154,11 +154,11 @@ class bee():
 def skirmish():
     # The red drone takes ownership (for the red colony) of the edge it is facing, it then rotates 60°
     # clockwise to face a new edge and finally it jumps r hexagons along the hive.
-    myHive.set_hex_side(red.position,red.direction, red.team) 
+    myHive.set_hex_side(red.position, red.direction, red.team) 
     red.rotate_move(RED_MOVE_DISTANCE)
     # The blue drone similarly takes ownership of the edge it is facing, it then rotates 60° anti-clockwise to
     # face a new edge before finally jumping b hexagons.
-    myHive.set_hex_side(blue.position,blue.direction, blue.team) 
+    myHive.set_hex_side(blue.position, blue.direction, blue.team) 
     blue.rotate_move(BLUE_MOVE_DISTANCE)
     
 
@@ -189,6 +189,27 @@ def feud(team, feud_hex_start, feud_hex_stop, feud_side_start, feud_side_stop, f
                         break
             if feud_end:
                 break
+
+    if not feud_end:
+        print('feud: second round check - gain one, null one of opponent')
+        # 2a: gain one hex and removel control of one hex from enemy
+        for hex in range(feud_hex_start, feud_hex_stop, feud_direction):
+            if myHive.get_hex_controller(hex)[0] == '_':
+                # see if any neighbour has controller == None
+                for side in range (feud_side_start, feud_side_stop, feud_direction):
+                    hex_neighbour = myHive.neighbours[hex][side]
+                    # sometimes there is no neighbour, so check if neighbour is there
+                    if hex_neighbour:
+                        # hex neighbour is in range 1-25, so subtract 1
+                        hex_neighbour -=1 
+                        control, margin = myHive.get_hex_controller(hex_neighbour)
+                        if control != team and margin < 2:
+                            # take control of this hex/side
+                            myHive.set_hex_side(hex, side, team)
+                            feud_end = True
+                            break
+                if feud_end:
+                    break
     
 ####################
 # Main starts here #
@@ -222,7 +243,7 @@ for n in range (25):
     if myHive.get_hex_controller(n)[0] == 'B':
         blue_total += 1
 
-print("print hive representation")
+print("hive representation")
 print(myHive)
 
 
