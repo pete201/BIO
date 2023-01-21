@@ -20,7 +20,7 @@ class hexagon():
 
 
     def get_controller(self):
-        '''returns team with majority sides or None'''
+        '''returns team with majority sides or "_" for none'''
         controller = "_"
         if self.sides_list.count("R") > self.sides_list.count("B"):
             controller = "R"
@@ -35,6 +35,24 @@ class hexagon():
             rep += str(item) + " "
         return rep
 
+class superhex(hexagon):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def get_controller(self):
+        #return super().get_controller()
+        '''returns controlling team, majority; or "_" for none'''
+        controller = "_"
+        majority = 0
+        red_count = self.sides_list.count("R")
+        blue_count = self.sides_list.count("B")
+        if red_count > blue_count:
+            controller = "R"
+            majority = red_count - blue_count
+        if blue_count > red_count:
+            controller = "B"
+            majority = blue_count - red_count
+        return controller, majority
 
 class hive():
     '''a set of 25 hexagons'''
@@ -78,12 +96,12 @@ class hive():
     def __init__(self) -> None:
         self.hex_list = []
         for n in range (25):
-            hex = hexagon()
+            hex = superhex()
             self.hex_list.append(hex)
 
 
     def get_hex_controller(self, ref):
-        '''returns team with majority sides or None'''
+        '''returns team with majority sides or "_" for none'''
         return self.hex_list[ref].get_controller()
 
 
@@ -110,23 +128,13 @@ class hive():
 
 class bee():
     '''buzzes around the hive setting sides to it's team colour'''
-    def __init__(self, team, start_hex, start_direction, rotation, move_distance, feud_direction) -> None:
+    def __init__(self, team, start_hex, start_direction, rotation, move_distance) -> None:
         self.team = team
         self.position = start_hex
         self.move_distance = move_distance
         self.direction = start_direction
         self.rotation = rotation
-        self.feud_direction = feud_direction
-        if self.feud_direction == 1:
-            self.feud_hex_start = 0
-            self.feud_hex_stop = 25
-            self.feud_side_start = 0
-            self.feud_side_stop = 6
-        else:
-            self.feud_hex_start = 24
-            self.feud_hex_stop = -1
-            self.feud_side_start = 5
-            self.feud_side_stop = -1
+
     
     def rotate_move(self, move):
         '''rotates the bee and moves it's set move distance'''
@@ -142,35 +150,6 @@ class bee():
         if self.position < 0:
             self.position += 25
 
-    def feud(self):
-        # each bee determines what is preferred edge
-        # 1 - gain control over most hexagons
-        # 2 - take away control from enemy
-        # 3 - hex number red=lowest, blue=highest
-
-        # 1: find adjacent hex's with control==None
-        feud_end = False
-        for hex in range(self.feud_hex_start,self.feud_hex_stop,self.feud_direction):
-            # find controller of this cell == None, continue, else next
-            test_hex = myHive.get_hex_controller(hex) 
-            if myHive.get_hex_controller(hex) == 'None':
-                # see if any neighbour has controller == None
-                for side in range (self.feud_side_start,self.feud_side_stop,self.feud_direction):
-                    hex_neighbour = myHive.neighbours[hex][side]
-                    # sometimes there is no neighbour, so check if neighbour is there
-                    if hex_neighbour:
-                        # hex neighbour is in range 1-25, so subtract 1
-                        hex_neighbour -=1 
-                        if myHive.get_hex_controller(hex_neighbour) == 'None':
-                            # take control of this hex/side
-                            myHive.set_hex_side(hex, side, self.team)
-                            feud_end = True
-                            break
-                if feud_end:
-                    break
-                
-
-
 
 def skirmish():
     # The red drone takes ownership (for the red colony) of the edge it is facing, it then rotates 60°
@@ -182,6 +161,34 @@ def skirmish():
     myHive.set_hex_side(blue.position,blue.direction, blue.team) 
     blue.rotate_move(BLUE_MOVE_DISTANCE)
     
+
+def feud(team, feud_hex_start, feud_hex_stop, feud_side_start, feud_side_stop, feud_direction):
+    # each bee determines what is preferred edge
+    # 1 - gain control over most hexagons
+    # 2 - take away control from enemy
+    # 3 - hex number red=lowest, blue=highest
+
+    # 1: find adjacent hex's with control==None
+    feud_end = False
+
+    for hex in range(feud_hex_start, feud_hex_stop, feud_direction):
+        # find controller of this cell == none, continue, else next
+        test_hex = myHive.get_hex_controller(hex) 
+        if myHive.get_hex_controller(hex)[0] == '_':
+            # see if any neighbour has controller == None
+            for side in range (feud_side_start, feud_side_stop, feud_direction):
+                hex_neighbour = myHive.neighbours[hex][side]
+                # sometimes there is no neighbour, so check if neighbour is there
+                if hex_neighbour:
+                    # hex neighbour is in range 1-25, so subtract 1
+                    hex_neighbour -=1 
+                    if myHive.get_hex_controller(hex_neighbour)[0] == '_':
+                        # take control of this hex/side
+                        myHive.set_hex_side(hex, side, team)
+                        feud_end = True
+                        break
+            if feud_end:
+                break
     
 ####################
 # Main starts here #
@@ -191,17 +198,16 @@ myHive = hive()
 
 "Two drones are in the hive: a red drone on hexagon 1 facing edge 1" 
 "and a blue drone on hexagon 25 facing edge 6."
-red = bee(team='R', start_hex=0, start_direction=0, rotation=1, move_distance=RED_MOVE_DISTANCE, feud_direction=1)
-blue = bee(team='B', start_hex=24, start_direction=5, rotation=-1, move_distance=BLUE_MOVE_DISTANCE, feud_direction=-1)
+red = bee(team='R', start_hex=0, start_direction=0, rotation=1, move_distance=RED_MOVE_DISTANCE)
+blue = bee(team='B', start_hex=24, start_direction=5, rotation=-1, move_distance=BLUE_MOVE_DISTANCE)
 
 for n in range(SKIRMISHES):
     skirmish()
 
 
-
 for n in range(FEUDS):
-    red.feud()
-    blue.feud()
+    feud(red.team, 0, 24, 0, 5, 1)
+    feud(blue.team, 24, 0, 5, 0, -1)
 
 
 # count cells controlled by red and blue:
@@ -211,9 +217,9 @@ blue_total = 0
 for n in range (25):
     print(n+1, end=" ")
     print(myHive.get_hex_controller(n))
-    if myHive.get_hex_controller(n) == 'R':
+    if myHive.get_hex_controller(n)[0] == 'R':
         red_total += 1
-    if myHive.get_hex_controller(n) == 'B':
+    if myHive.get_hex_controller(n)[0] == 'B':
         blue_total += 1
 
 print("print hive representation")
@@ -223,3 +229,5 @@ print(myHive)
 print('final results:')
 print('red  controlls', red_total)
 print('blue controlls', blue_total)
+
+
