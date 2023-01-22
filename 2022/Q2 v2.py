@@ -3,6 +3,8 @@
 # in this version i'll use a linear run of 25 hexagons and a look up table for neighbours
 # problem is I can't find a quick easy soln to find neighbors from a given hex (else a grid makes more sense)
 
+# edit from laptop
+
 # contants
 RED_MOVE_DISTANCE  = 9
 BLUE_MOVE_DISTANCE = 3
