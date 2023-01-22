@@ -1,0 +1,4 @@
+my hexagon class counts specifically 'R' and 'B'
+this is not very generic, so i'd like to change it so that it counts the 'team' variable passed as 'R' and 'B'
+
+also, one of the tests doesn't work with Skirmish only, and several of the feud tests don't give the correct results

@@ -4,10 +4,10 @@
 # problem is I can't find a quick easy soln to find neighbors from a given hex (else a grid makes more sense)
 
 # contants
-RED_MOVE_DISTANCE  = 2
-BLUE_MOVE_DISTANCE = 11
-SKIRMISHES = 0
-FEUDS = 1
+RED_MOVE_DISTANCE  = 1
+BLUE_MOVE_DISTANCE = 14
+SKIRMISHES = 31
+FEUDS = 19
 
 class hexagon():
     '''the building block of hive with 6 sides that can be set to red/blue'''
