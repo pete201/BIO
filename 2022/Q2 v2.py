@@ -1,8 +1,4 @@
-# https://www.olympiad.org.uk/papers/2022/bio/bio22-exam.pdf
-#
-# in this version i'll use a linear run of 25 hexagons and a look up table for neighbours
-# problem is I can't find a quick easy soln to find neighbors from a given hex (else a grid makes more sense)
-
+c
 # edit from laptop
 
 # contants
