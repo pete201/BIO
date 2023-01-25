@@ -3,9 +3,9 @@
 # in this version i'll use a 5x5 array of hexagons attempting to find neighbours from a given hex
 
 # contants
-RED_MOVE_DISTANCE  = 1
-BLUE_MOVE_DISTANCE = 14
-SKIRMISHES = 31
+RED_MOVE_DISTANCE  = 9
+BLUE_MOVE_DISTANCE = 3
+SKIRMISHES = 3
 FEUDS = 19
 
 class hexagon():
@@ -36,17 +36,15 @@ class hive():
                 self.hexagons.append(hexagon())
             self.rows.append(self.hexagons)
 
-
     def get_count(self, hex_coords, drone):
         return self.rows[hex_coords[0]][hex_coords[1]].get_count(str(drone))
          
-
     def set_hex_side(self, hex_coords, side, drone):
         '''sets owner of hexagon sides when a bee lands'''
         self.rows[hex_coords[0]][hex_coords[1]].sides[side] = drone
         #TODO neighbours
+        
 
-    
     def __str__(self) -> str:
         '''returns a representation of the hive status'''
         rep = ""
@@ -58,7 +56,9 @@ class hive():
 
 
 class drone():
-    '''buzzes round the hive setting sides as it goes'''
+    '''buzzes round the hive setting sides as it goes
+    Start Direction = hex wall number (0-5)
+    Rotation is either +1 or -1'''
     def __init__(self, name, start_coords, start_direction, rotation, move_distance) -> None:
         self.name = name
         self.position = start_coords
@@ -66,8 +66,7 @@ class drone():
         self.direction = start_direction
         self.rotation = rotation
 
-    
-    def rotate_move(self, move):
+    def rotate_move(self):
         '''rotates the bee and moves it's set move distance'''
         self.direction += self.rotation
         if self.direction > 5:
@@ -75,26 +74,36 @@ class drone():
         if self.direction < 0:
             self.direction = 5
 
-        #TODO - change this to co-ordinates system
-        #  self.position += self.move_distance
-        # if self.position > 24:
-        #     self.position -= 25 #25 hexagons in the hive
-        # if self.position < 0:
-        #     self.position += 25
+        # note moves are always forwards
+        self.position[1] += self.move_distance
+        while self.position[1] > 4:
+            self.position[1] -= 5 # 5 hexagons in each row
+            self.position[0] += 1
+            if self.position[0] > 4:
+                self.position[0] -= 5   # 5 rows in the hive
 
+
+def skirmish(n):
+    for _ in range(n):
+        myHive.set_hex_side(red.position,side=red.direction, drone=red.name)
+        red.rotate_move()
+
+        myHive.set_hex_side(blue.position,side=blue.direction, drone=blue.name)
+        blue.rotate_move()
+        print(red.position, blue.position)
 
 ###################################################################################
 #  MAIN  #
 
 myHive = hive()
 
+red = drone('R', [0,0], 0, 1, RED_MOVE_DISTANCE)
+blue = drone('B', [4,4], 5, -1, BLUE_MOVE_DISTANCE)
 
-myHive.set_hex_side([0,0],side=0, drone='R')
-myHive.set_hex_side([0,0],side=1, drone='R')
-myHive.set_hex_side([0,0],side=5, drone='B')
+skirmish(SKIRMISHES)
+    
+print(myHive)
 
 count_red = myHive.get_count([0,0], 'R')
 count_blue = myHive.get_count([0,0], 'B')
 print('R B : ', count_red, count_blue, '\n')
-
-print(myHive)
