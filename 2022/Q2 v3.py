@@ -39,9 +39,9 @@ class hive():
     def get_count(self, hex_coords, drone):
         return self.rows[hex_coords[0]][hex_coords[1]].get_count(str(drone))
          
-    def set_hex_side(self, hex_coords, side, drone):
+    def set_hex_side(self, drone):
         '''sets owner of hexagon sides when a bee lands'''
-        self.rows[hex_coords[0]][hex_coords[1]].sides[side] = drone
+        self.rows[drone.position[0]][drone.position[1]].sides[drone.direction] = drone.name
         #TODO neighbours
         
 
@@ -85,10 +85,10 @@ class drone():
 
 def skirmish(n):
     for _ in range(n):
-        myHive.set_hex_side(red.position,side=red.direction, drone=red.name)
+        myHive.set_hex_side(red)
         red.rotate_move()
 
-        myHive.set_hex_side(blue.position,side=blue.direction, drone=blue.name)
+        myHive.set_hex_side(blue)
         blue.rotate_move()
         print(red.position, blue.position)
 
