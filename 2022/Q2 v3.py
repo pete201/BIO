@@ -43,6 +43,55 @@ class hive():
         '''sets owner of hexagon sides when a bee lands'''
         self.rows[drone.position[0]][drone.position[1]].sides[drone.direction] = drone.name
         #TODO neighbours
+        # neighbours depend upon odd/even row number.  
+        # so for TR and BR we want current cell number + row%2 (row%2 = 1 for odd rows)
+        # and for TL and BL we want current cell number - row%2 
+        
+        neighbour = [-1,-1]
+        # TOP RIGHT:
+        if drone.position[0] > 0:   # only look for top neighbour if not in top row
+            neighbour[0] = (drone.position[0] - 1)
+            neighbour[1] = drone.position[1] + drone.position[0]%2
+            if neighbour[1] < 5:
+                print(drone.name, drone.position,'found a neighbour at', neighbour)
+            #else: print(drone.name, drone.position,'at an edge')
+        #else: print(drone.name, drone.position,'at the top')
+        # RIGHT:
+        neighbour[0] = drone.position[0]
+        if drone.position[1] < 4:
+            neighbour[1] = drone.position[1] + 1
+            #print(drone.name, drone.position,'found a neighbour at', neighbour)
+        #else: print(drone.name, drone.position,'at an edge')
+        # BOTTOM RIGHT:
+        if drone.position[0] < 4:   # only look for top neighbour if not in bottom row
+            neighbour[0] = (drone.position[0] + 1)
+            neighbour[1] = drone.position[1] + drone.position[0]%2
+            if neighbour[1] < 5:
+                print(drone.name, drone.position,'found a neighbour at', neighbour)
+            #else: print(drone.name, drone.position,'at an edge')
+        #else: print(drone.name, drone.position,'at the bottom')
+        # BOTTOM LEFT:
+        if drone.position[0] < 4:   # only look for top neighbour if not in bottom row
+            neighbour[0] = (drone.position[0] + 1)
+            neighbour[1] = drone.position[1] -1 + drone.position[0]%2
+            if neighbour[1] > -1:
+                print(drone.name, drone.position,'found a neighbour at', neighbour)
+            #else: print(drone.name, drone.position,'at an edge')
+        #else: print(drone.name, drone.position,'at the bottom')
+        # LEFT:
+        neighbour[0] = drone.position[0]
+        if drone.position[1] > 0:
+            neighbour[1] = drone.position[1] - 1
+            print(drone.name, drone.position,'found a neighbour at', neighbour)
+        #else: print(drone.name, drone.position,'at an edge')
+        # TOP LEFT:
+        if drone.position[0] > 0:   # only look for top neighbour if not in top row
+            neighbour[0] = (drone.position[0] - 1)
+            neighbour[1] = drone.position[1] -1 + drone.position[0]%2
+            if neighbour[1] > -1:
+                print(drone.name, drone.position,'found a neighbour at', neighbour)
+            #else: print(drone.name, drone.position,'at an edge')
+        #else: print(drone.name, drone.position,'at the top')  
         
 
     def __str__(self) -> str:
