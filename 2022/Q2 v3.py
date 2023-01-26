@@ -15,7 +15,7 @@ class hexagon():
         for _ in range (6):
             self.sides.append('_')
 
-    def get_count(self, drone):
+    def get_sides_count(self, drone):
         '''returns number of sides for drone'''
         return self.sides.count(drone)
 
@@ -36,63 +36,81 @@ class hive():
                 self.hexagons.append(hexagon())
             self.rows.append(self.hexagons)
 
-    def get_count(self, hex_coords, drone):
-        return self.rows[hex_coords[0]][hex_coords[1]].get_count(drone.name)
+    def get_side_count(self, hex_coords, drone):
+        return self.rows[hex_coords[0]][hex_coords[1]].get_sides_count(drone.name)
          
     def set_hex_side(self, drone):
         '''sets owner of hexagon sides when a bee lands'''
         self.rows[drone.position[0]][drone.position[1]].sides[drone.direction] = drone.name
-        #TODO neighbours
+
         # neighbours depend upon odd/even row number.  
         # so for TR and BR we want current cell number + row%2 (row%2 = 1 for odd rows)
         # and for TL and BL we want current cell number - row%2 
         
         neighbour = [-1,-1]
         # TOP RIGHT:
-        if drone.position[0] > 0:   # only look for top neighbour if not in top row
-            neighbour[0] = (drone.position[0] - 1)
-            neighbour[1] = drone.position[1] + drone.position[0]%2
-            if neighbour[1] < 5:
-                print(drone.name, drone.position,'found a neighbour at', neighbour)
-            #else: print(drone.name, drone.position,'at an edge')
-        #else: print(drone.name, drone.position,'at the top')
+        if drone.direction == 0:
+            if drone.position[0] > 0:   # only look for top neighbour if not in top row
+                neighbour[0] = (drone.position[0] - 1)
+                neighbour[1] = drone.position[1] + drone.position[0]%2
+                if neighbour[1] < 5:
+                    print(drone.name, drone.position,'found a neighbour at', neighbour)
+                    self.set_opposite_side(neighbour, drone.direction, drone.name)
+                #else: print(drone.name, drone.position,'at an edge')
+            #else: print(drone.name, drone.position,'at the top')
         # RIGHT:
-        neighbour[0] = drone.position[0]
-        if drone.position[1] < 4:
-            neighbour[1] = drone.position[1] + 1
-            #print(drone.name, drone.position,'found a neighbour at', neighbour)
-        #else: print(drone.name, drone.position,'at an edge')
+        if drone.direction == 1:
+            neighbour[0] = drone.position[0]
+            if drone.position[1] < 4:
+                neighbour[1] = drone.position[1] + 1
+                print(drone.name, drone.position,'found a neighbour at', neighbour)
+                self.set_opposite_side(neighbour, drone.direction, drone.name)
+            #else: print(drone.name, drone.position,'at an edge')
         # BOTTOM RIGHT:
-        if drone.position[0] < 4:   # only look for top neighbour if not in bottom row
-            neighbour[0] = (drone.position[0] + 1)
-            neighbour[1] = drone.position[1] + drone.position[0]%2
-            if neighbour[1] < 5:
-                print(drone.name, drone.position,'found a neighbour at', neighbour)
-            #else: print(drone.name, drone.position,'at an edge')
-        #else: print(drone.name, drone.position,'at the bottom')
+        if drone.direction == 2:
+            if drone.position[0] < 4:   # only look for top neighbour if not in bottom row
+                neighbour[0] = (drone.position[0] + 1)
+                neighbour[1] = drone.position[1] + drone.position[0]%2
+                if neighbour[1] < 5:
+                    print(drone.name, drone.position,'found a neighbour at', neighbour)
+                    self.set_opposite_side(neighbour, drone.direction, drone.name)
+                #else: print(drone.name, drone.position,'at an edge')
+            #else: print(drone.name, drone.position,'at the bottom')
         # BOTTOM LEFT:
-        if drone.position[0] < 4:   # only look for top neighbour if not in bottom row
-            neighbour[0] = (drone.position[0] + 1)
-            neighbour[1] = drone.position[1] -1 + drone.position[0]%2
-            if neighbour[1] > -1:
-                print(drone.name, drone.position,'found a neighbour at', neighbour)
-            #else: print(drone.name, drone.position,'at an edge')
-        #else: print(drone.name, drone.position,'at the bottom')
+        if drone.direction == 3:
+            if drone.position[0] < 4:   # only look for top neighbour if not in bottom row
+                neighbour[0] = (drone.position[0] + 1)
+                neighbour[1] = drone.position[1] -1 + drone.position[0]%2
+                if neighbour[1] > -1:
+                    print(drone.name, drone.position,'found a neighbour at', neighbour)
+                    self.set_opposite_side(neighbour, drone.direction, drone.name)
+                #else: print(drone.name, drone.position,'at an edge')
+            #else: print(drone.name, drone.position,'at the bottom')
         # LEFT:
-        neighbour[0] = drone.position[0]
-        if drone.position[1] > 0:
-            neighbour[1] = drone.position[1] - 1
-            print(drone.name, drone.position,'found a neighbour at', neighbour)
-        #else: print(drone.name, drone.position,'at an edge')
-        # TOP LEFT:
-        if drone.position[0] > 0:   # only look for top neighbour if not in top row
-            neighbour[0] = (drone.position[0] - 1)
-            neighbour[1] = drone.position[1] -1 + drone.position[0]%2
-            if neighbour[1] > -1:
+        if drone.direction == 4:
+            neighbour[0] = drone.position[0]
+            if drone.position[1] > 0:
+                neighbour[1] = drone.position[1] - 1
                 print(drone.name, drone.position,'found a neighbour at', neighbour)
+                self.set_opposite_side(neighbour, drone.direction, drone.name)
             #else: print(drone.name, drone.position,'at an edge')
-        #else: print(drone.name, drone.position,'at the top')  
+        # TOP LEFT:
+        if drone.direction == 5:
+            if drone.position[0] > 0:   # only look for top neighbour if not in top row
+                neighbour[0] = (drone.position[0] - 1)
+                neighbour[1] = drone.position[1] -1 + drone.position[0]%2
+                if neighbour[1] > -1:
+                    print(drone.name, drone.position,'found a neighbour at', neighbour)
+                    self.set_opposite_side(neighbour, drone.direction, drone.name)
+                #else: print(drone.name, drone.position,'at an edge')
+            #else: print(drone.name, drone.position,'at the top')  
         
+    def set_opposite_side(self, neighbour, side, name):
+        '''given a hexagon side, returns opposite side'''
+        opposite = side + 3
+        if opposite > 5:
+            opposite -= 6
+        self.rows[neighbour[0]][neighbour[1]].sides[opposite] = name
 
     def __str__(self) -> str:
         '''returns a representation of the hive status'''
@@ -153,6 +171,16 @@ skirmish(SKIRMISHES)
     
 print(myHive)
 
-count_red = myHive.get_count([0,0], red)
-count_blue = myHive.get_count([0,0], blue)
-print('R B : ', count_red, count_blue, '\n')
+
+red_control_count = 0
+blue_control_count = 0
+
+for row in range(5):
+    for col in range(5):
+        if myHive.get_side_count([row,col], red) > myHive.get_side_count([row,col], blue):
+            red_control_count +=1
+        if myHive.get_side_count([row,col], blue) > myHive.get_side_count([row,col], red):
+            blue_control_count +=1
+
+print('Red controlls : ', red_control_count)
+print('Blue controlls: ', blue_control_count)
