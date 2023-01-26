@@ -39,13 +39,13 @@ class hive():
     def get_side_count(self, hex_coords, drone):
         return self.rows[hex_coords[0]][hex_coords[1]].get_sides_count(drone.name)
          
-    def set_hex_side(self, drone):
-        '''sets owner of hexagon sides when a bee lands'''
-        self.rows[drone.position[0]][drone.position[1]].sides[drone.direction] = drone.name
+    def take_ownership(self, drone):
+        '''sets owner of adjoining hexagon sides when a bee lands'''
+        self.set_hexagon_side(drone.position, drone.direction, drone.name)
 
-        # neighbours depend upon odd/even row number.  
-        # so for TR and BR we want current cell number + row%2 (row%2 = 1 for odd rows)
-        # and for TL and BL we want current cell number - row%2 
+        # neighbours depend upon odd/even row number  (row%2 = 1 for odd rows)
+        # so, for TR and BR = current cell number + row%2
+        # and for TL and BL = current cell number -1 + row%2 
         
         neighbour = [-1,-1]
         # TOP RIGHT:
@@ -105,12 +105,15 @@ class hive():
                 #else: print(drone.name, drone.position,'at an edge')
             #else: print(drone.name, drone.position,'at the top')  
         
-    def set_opposite_side(self, neighbour, side, name):
+    def set_opposite_side(self, hex_coords, side, name):
         '''given a hexagon side, returns opposite side'''
         opposite = side + 3
         if opposite > 5:
             opposite -= 6
-        self.rows[neighbour[0]][neighbour[1]].sides[opposite] = name
+        self.rows[hex_coords[0]][hex_coords[1]].sides[opposite] = name
+
+    def set_hexagon_side(self, hex_coords, side, name):
+        self.rows[hex_coords[0]][hex_coords[1]].sides[side] = name
 
     def __str__(self) -> str:
         '''returns a representation of the hive status'''
@@ -152,10 +155,10 @@ class drone():
 
 def skirmish(n):
     for _ in range(n):
-        myHive.set_hex_side(red)
+        myHive.take_ownership(red)
         red.rotate_move()
 
-        myHive.set_hex_side(blue)
+        myHive.take_ownership(blue)
         blue.rotate_move()
         print(red.position, blue.position)
 
