@@ -51,6 +51,11 @@ class hive():
 
     def get_neighbour(self, drone_coords, drone_direction):
         '''finds neighbouring hex that drone is facing'''
+
+        
+        #TODO - DISALLOW NEIGHBOURS OUT OF RANGE
+
+
         # neighbours depend upon odd/even row number  (row%2 = 1 for odd rows)
         # so, for TR and BR = current cell number + row%2
         # and for TL and BL = current cell number -1 + row%2 
@@ -62,7 +67,7 @@ class hive():
                 neighbour[0] = (drone_coords[0] - 1)
                 neighbour[1] = drone_coords[1] + drone_coords[0]%2
                 if neighbour[1] < 5:
-                    print(drone_coords,'found a neighbour at', neighbour)
+                    #print(drone_coords,'found a neighbour at', neighbour)
         # RIGHT:
         if drone_direction == 1:
             neighbour[0] = drone_coords[0]
