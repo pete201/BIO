@@ -41,69 +41,63 @@ class hive():
          
     def take_ownership(self, drone):
         '''sets owner of adjoining hexagon sides when a bee lands'''
+        # first, take ownership of this hexagon side that drone is facing
         self.set_hexagon_side(drone.position, drone.direction, drone.name)
+        # then get neighbour of facing side
+        neighbour = self.get_neighbour(drone.position, drone.direction)
+        # and take ownership of adjoining edge
+        self.set_opposite_side(neighbour, drone.direction, drone.name)
 
+
+    def get_neighbour(self, drone_coords, drone_direction):
+        '''finds neighbouring hex that drone is facing'''
         # neighbours depend upon odd/even row number  (row%2 = 1 for odd rows)
         # so, for TR and BR = current cell number + row%2
         # and for TL and BL = current cell number -1 + row%2 
         
         neighbour = [-1,-1]
         # TOP RIGHT:
-        if drone.direction == 0:
-            if drone.position[0] > 0:   # only look for top neighbour if not in top row
-                neighbour[0] = (drone.position[0] - 1)
-                neighbour[1] = drone.position[1] + drone.position[0]%2
+        if drone_direction == 0:
+            if drone_coords[0] > 0:   # only look for top neighbour if not in top row
+                neighbour[0] = (drone_coords[0] - 1)
+                neighbour[1] = drone_coords[1] + drone_coords[0]%2
                 if neighbour[1] < 5:
-                    print(drone.name, drone.position,'found a neighbour at', neighbour)
-                    self.set_opposite_side(neighbour, drone.direction, drone.name)
-                #else: print(drone.name, drone.position,'at an edge')
-            #else: print(drone.name, drone.position,'at the top')
+                    print(drone_coords,'found a neighbour at', neighbour)
         # RIGHT:
-        if drone.direction == 1:
-            neighbour[0] = drone.position[0]
-            if drone.position[1] < 4:
-                neighbour[1] = drone.position[1] + 1
-                print(drone.name, drone.position,'found a neighbour at', neighbour)
-                self.set_opposite_side(neighbour, drone.direction, drone.name)
-            #else: print(drone.name, drone.position,'at an edge')
+        if drone_direction == 1:
+            neighbour[0] = drone_coords[0]
+            if drone_coords[1] < 4:
+                neighbour[1] = drone_coords[1] + 1
+                print(drone_coords,'found a neighbour at', neighbour)
         # BOTTOM RIGHT:
-        if drone.direction == 2:
-            if drone.position[0] < 4:   # only look for top neighbour if not in bottom row
-                neighbour[0] = (drone.position[0] + 1)
-                neighbour[1] = drone.position[1] + drone.position[0]%2
+        if drone_direction == 2:
+            if drone_coords[0] < 4:   # only look for top neighbour if not in bottom row
+                neighbour[0] = (drone_coords[0] + 1)
+                neighbour[1] = drone_coords[1] + drone_coords[0]%2
                 if neighbour[1] < 5:
-                    print(drone.name, drone.position,'found a neighbour at', neighbour)
-                    self.set_opposite_side(neighbour, drone.direction, drone.name)
-                #else: print(drone.name, drone.position,'at an edge')
-            #else: print(drone.name, drone.position,'at the bottom')
+                    print(drone_coords,'found a neighbour at', neighbour)
         # BOTTOM LEFT:
-        if drone.direction == 3:
-            if drone.position[0] < 4:   # only look for top neighbour if not in bottom row
-                neighbour[0] = (drone.position[0] + 1)
-                neighbour[1] = drone.position[1] -1 + drone.position[0]%2
+        if drone_direction == 3:
+            if drone_coords[0] < 4:   # only look for top neighbour if not in bottom row
+                neighbour[0] = (drone_coords[0] + 1)
+                neighbour[1] = drone_coords[1] -1 + drone_coords[0]%2
                 if neighbour[1] > -1:
-                    print(drone.name, drone.position,'found a neighbour at', neighbour)
-                    self.set_opposite_side(neighbour, drone.direction, drone.name)
-                #else: print(drone.name, drone.position,'at an edge')
-            #else: print(drone.name, drone.position,'at the bottom')
+                    print(drone_coords,'found a neighbour at', neighbour)
         # LEFT:
-        if drone.direction == 4:
-            neighbour[0] = drone.position[0]
-            if drone.position[1] > 0:
-                neighbour[1] = drone.position[1] - 1
-                print(drone.name, drone.position,'found a neighbour at', neighbour)
-                self.set_opposite_side(neighbour, drone.direction, drone.name)
-            #else: print(drone.name, drone.position,'at an edge')
+        if drone_direction == 4:
+            neighbour[0] = drone_coords[0]
+            if drone_coords[1] > 0:
+                neighbour[1] = drone_coords[1] - 1
+                print(drone_coords,'found a neighbour at', neighbour)
         # TOP LEFT:
-        if drone.direction == 5:
-            if drone.position[0] > 0:   # only look for top neighbour if not in top row
-                neighbour[0] = (drone.position[0] - 1)
-                neighbour[1] = drone.position[1] -1 + drone.position[0]%2
+        if drone_direction == 5:
+            if drone_coords[0] > 0:   # only look for top neighbour if not in top row
+                neighbour[0] = (drone_coords[0] - 1)
+                neighbour[1] = drone_coords[1] -1 + drone_coords[0]%2
                 if neighbour[1] > -1:
-                    print(drone.name, drone.position,'found a neighbour at', neighbour)
-                    self.set_opposite_side(neighbour, drone.direction, drone.name)
-                #else: print(drone.name, drone.position,'at an edge')
-            #else: print(drone.name, drone.position,'at the top')  
+                    print(drone_coords,'found a neighbour at', neighbour)
+
+        return neighbour
         
     def set_opposite_side(self, hex_coords, side, name):
         '''given a hexagon side, returns opposite side'''
