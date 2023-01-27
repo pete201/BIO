@@ -3,10 +3,10 @@
 # in this version i'll use a 5x5 array of hexagons attempting to find neighbours from a given hex
 
 # contants
-RED_MOVE_DISTANCE  = 9
-BLUE_MOVE_DISTANCE = 3
-SKIRMISHES = 3
-FEUDS = 19
+RED_MOVE_DISTANCE  = 25
+BLUE_MOVE_DISTANCE = 24
+SKIRMISHES = 999
+FEUDS = 0
 
 class hexagon():
     '''the building block of hive with 6 sides that can be set to red/blue'''
@@ -45,16 +45,13 @@ class hive():
         self.set_hexagon_side(drone.position, drone.direction, drone.name)
         # then get neighbour of facing side
         neighbour = self.get_neighbour(drone.position, drone.direction)
-        # and take ownership of adjoining edge
-        self.set_opposite_side(neighbour, drone.direction, drone.name)
+        # if a neighbour returned, take ownership of adjoining edge
+        if neighbour:
+            self.set_opposite_side(neighbour, drone.direction, drone.name)
 
 
     def get_neighbour(self, drone_coords, drone_direction):
         '''finds neighbouring hex that drone is facing'''
-
-        
-        #TODO - DISALLOW NEIGHBOURS OUT OF RANGE
-
 
         # neighbours depend upon odd/even row number  (row%2 = 1 for odd rows)
         # so, for TR and BR = current cell number + row%2
@@ -67,13 +64,15 @@ class hive():
                 neighbour[0] = (drone_coords[0] - 1)
                 neighbour[1] = drone_coords[1] + drone_coords[0]%2
                 if neighbour[1] < 5:
-                    #print(drone_coords,'found a neighbour at', neighbour)
+                    print(drone_coords,'found a neighbour at', neighbour)
+                    return neighbour
         # RIGHT:
         if drone_direction == 1:
             neighbour[0] = drone_coords[0]
             if drone_coords[1] < 4:
                 neighbour[1] = drone_coords[1] + 1
                 print(drone_coords,'found a neighbour at', neighbour)
+                return neighbour
         # BOTTOM RIGHT:
         if drone_direction == 2:
             if drone_coords[0] < 4:   # only look for top neighbour if not in bottom row
@@ -81,6 +80,7 @@ class hive():
                 neighbour[1] = drone_coords[1] + drone_coords[0]%2
                 if neighbour[1] < 5:
                     print(drone_coords,'found a neighbour at', neighbour)
+                    return neighbour
         # BOTTOM LEFT:
         if drone_direction == 3:
             if drone_coords[0] < 4:   # only look for top neighbour if not in bottom row
@@ -88,12 +88,14 @@ class hive():
                 neighbour[1] = drone_coords[1] -1 + drone_coords[0]%2
                 if neighbour[1] > -1:
                     print(drone_coords,'found a neighbour at', neighbour)
+                    return neighbour
         # LEFT:
         if drone_direction == 4:
             neighbour[0] = drone_coords[0]
             if drone_coords[1] > 0:
                 neighbour[1] = drone_coords[1] - 1
                 print(drone_coords,'found a neighbour at', neighbour)
+                return neighbour
         # TOP LEFT:
         if drone_direction == 5:
             if drone_coords[0] > 0:   # only look for top neighbour if not in top row
@@ -101,8 +103,9 @@ class hive():
                 neighbour[1] = drone_coords[1] -1 + drone_coords[0]%2
                 if neighbour[1] > -1:
                     print(drone_coords,'found a neighbour at', neighbour)
+                    return neighbour
 
-        return neighbour
+        return None
         
     def set_opposite_side(self, hex_coords, side, name):
         '''given a hexagon side, returns opposite side'''
@@ -172,7 +175,6 @@ blue = drone('B', [4,4], 5, -1, BLUE_MOVE_DISTANCE)
 skirmish(SKIRMISHES)
     
 print(myHive)
-
 
 red_control_count = 0
 blue_control_count = 0
