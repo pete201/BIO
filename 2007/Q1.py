@@ -5,13 +5,10 @@ debug = False
 def rule1(deck):
     '''a point for all permutations of identical numerical values'''
     points = 0
-    num_cards = len(deck)
-    for i in range(num_cards):
-        stem_card = deck[i]
-        for compare in range(i+1,num_cards):
-            if stem_card == deck[compare]:
+    for index,value in enumerate(deck):
+        for compare in deck[index+1:]:
+            if value == compare:
                 points += 1
-                # print('found pair: ',stem_card, deck[compare])
     return points
 
 
