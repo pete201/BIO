@@ -3,9 +3,9 @@
 # in this version i'll use a 5x5 array of hexagons attempting to find neighbours from a given hex
 
 # contants
-RED_MOVE_DISTANCE  = 25
-BLUE_MOVE_DISTANCE = 24
-SKIRMISHES = 999
+RED_MOVE_DISTANCE  = 9
+BLUE_MOVE_DISTANCE = 3
+SKIRMISHES = 24
 FEUDS = 0
 
 class hexagon():
