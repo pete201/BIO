@@ -1,0 +1,1 @@
+# input string of 9 characters into a list
