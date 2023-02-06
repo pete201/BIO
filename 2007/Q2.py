@@ -22,7 +22,6 @@ else:
 player = 'O'
 opponent = 'X'
 count = 0
-win = False
 MAX_TRIES = 19
 
 def swap_player(player):
@@ -55,14 +54,13 @@ def check_win(board, player):
 print(f'initial board layout is ', board)
 
 
-while not win and count < MAX_TRIES:
-    if check_win(board, player=player):
+while count < MAX_TRIES:
+    if check_win(board, player):
         break
     else: print(f'No winner: {player} has {board}')
 
     player, opponent = swap_player(player)
     count += 1
-
 
 if count < MAX_TRIES:
     print(f'{player} wins with board {board}')
