@@ -33,7 +33,26 @@ def check_win(board, player):
     #check player occupies puthai and check for P-E-P sequence 
     # (find returns position of string, or -1 if not found)
     return (putahi == player) and (pad_kawai.find(player + 'E' + player) > -1)
-    
+
+def get_available_moves(board, player):
+    '''returns a list of board results after move'''
+    # only one empty space, so player must move into E
+    putahi = board[0]
+    kawai = board[1:]
+
+    # if putahi is E, then move can be made from any posn except braced by own tiles
+    if putahi == 'E':
+        pass
+
+
+    # if E is in kawai, then move can be made from any posn next to E
+    else:
+        emptpy = kawai.find('E')
+        if kawai[emptpy-1] == player:   # note index naturally rolls round since -1 = end
+            left = empty - 1
+            if left < 0:
+                left = 7
+
 
 ######################main ###########################
 print(f'initial board layout is ', board)
