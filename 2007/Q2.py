@@ -106,6 +106,10 @@ while count < MAX_TRIES:
     else: print(f'No winner: {player} has {board}')
     # player takes a turn
 
+
+    options = get_available_moves(board, player)
+    print(f'options for {player} are',options)
+    if options:
     #TODO - apply turn taking rules: 
     #1. If there is a move which means my opponent will then lose, this move is played. If several such moves exist,
     #choose the one that uses the leftmost of my markers.
@@ -114,10 +118,7 @@ while count < MAX_TRIES:
     #my markers that avoids these moves). If it is not possible to avoid such a move, move the leftmost of my
     #markers.
     #3. If the previous rules do not indicate which move to take, move the leftmost of my markers.
-    
-    options = get_available_moves(board, player)
-    print(f'options for {player} are',options)
-    if options:
+
         board = options[0]
 
     player, opponent = swap_player(player)
