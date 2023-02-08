@@ -4,9 +4,11 @@
 debug = True
 
 if debug:
-    #board = 'EOOOOXXXX'
+    board = 'EOOOOXXXX'
     #board = 'oeooxxxxo'    # O wins
-    board = 'xxexooxxx'    # X wins
+    #board = 'xxexooxxx'    # X wins
+    #board = 'ooxoxexox'    # O in putahi, not winner
+    #board = 'xxoxoeoxo'    # O in putahi, not winner
     board = board.upper()
 else:
     input_string = input('Enter valid start posn (e.g. EOOOOXXXX)')
@@ -15,7 +17,7 @@ else:
 # initial condition
 player = 'O'
 opponent = 'X'
-MAX_TRIES = 19
+MAX_TRIES = 20
 count = 0
 
 def swap_player(player):
@@ -39,35 +41,93 @@ def get_available_moves(board, player):
     # only one empty space, so player must move into E
     putahi = board[0]
     kawai = board[1:]
+    available_moves = []
 
     # if putahi is E, then move can be made from any posn except braced by own tiles
     if putahi == 'E':
-        pass
+        # find every instance of player and swap with putahi
+        for i in range(8):
+            if kawai[i] == player:
+                valid_move = player + kawai[:i] + 'E' + kawai[i+1:]
+                available_moves.append(valid_move)
+
+                print('get_available_moves: putahi was E:',valid_move, len(valid_move))
 
 
-    # if E is in kawai, then move can be made from any posn next to E
+    # if E is in kawai, then move can be made from posns next to E, and from puthai
     else:
-        emptpy = kawai.find('E')
-        if kawai[emptpy-1] == player:   # note index naturally rolls round since -1 = end
-            left = empty - 1
-            if left < 0:
-                left = 7
+        empty = kawai.find('E') # retuns -1 for no find; index posn otherwise
+        # from the left...
+        left = empty - 1
+        if left < 0: left = 7   # not stricly necessary since index -1 == last char
+        if empty > 0 and kawai[left] == player:
+            valid_move = putahi + kawai[:left] + 'E' + player + kawai[empty+1:]
+            available_moves.append(valid_move)
+
+            print('get_available_moves: left, empty > 0:',valid_move, len(valid_move))
+        elif empty == 0 and kawai[left] == player:
+            valid_move = putahi + player + kawai[empty+1:left] + 'E'
+            available_moves.append(valid_move)
+
+            print('get_available_moves: left, empty = 0:',valid_move, len(valid_move))
+
+        # from the right...
+        right = empty + 1
+        if right > 7: right = 0
+        if empty < 7 and kawai[right] == player:
+            valid_move = putahi + kawai[:empty] + player + 'E' + kawai[right+1:]
+            available_moves.append(valid_move)
+
+            print('get_available_moves: right, empty > 0:',valid_move, len(valid_move))
+        elif empty == 7 and kawai[right] == player:
+            valid_move = putahi + 'E' + kawai[right+1:empty] + player
+            available_moves.append(valid_move)
+
+            print('get_available_moves: right, empty = 0:',valid_move, len(valid_move))
+        
+        # from the centre...
+        if putahi == player:
+            valid_move = 'E' + kawai[:empty] + player + kawai[empty+1:]
+            available_moves.append(valid_move)
+
+            print('get_available_moves: putahi is player:',valid_move, len(valid_move))
+            
+    return available_moves
+
 
 
 ######################main ###########################
-print(f'initial board layout is ', board)
+print('initial board layout is ', board)
 
 
 while count < MAX_TRIES:
     if check_win(board, player):
         break
     else: print(f'No winner: {player} has {board}')
-
-    player, opponent = swap_player(player)
-    count += 1
-
     # player takes a turn
 
+    #TODO - apply turn taking rules: 
+    #1. If there is a move which means my opponent will then lose, this move is played. If several such moves exist,
+    #choose the one that uses the leftmost of my markers.
+    #2. If the first rule does not indicate which move to take and there are moves, after which my opponent will be
+    #able to make a move meaning that I will then lose, those moves are to be avoided (by moving the leftmost of
+    #my markers that avoids these moves). If it is not possible to avoid such a move, move the leftmost of my
+    #markers.
+    #3. If the previous rules do not indicate which move to take, move the leftmost of my markers.
+    
+    options = get_available_moves(board, player)
+    print(f'options for {player} are',options)
+    if options:
+        board = options[0]
+
+    player, opponent = swap_player(player)
+
+    
+
+    count += 1
+
+    
+
 if count < MAX_TRIES:
-    print(f'{player} wins with board {board}')
+    print(f'{player} wins in {count} with board {board}')
 else: print('Its a draw - try again')
