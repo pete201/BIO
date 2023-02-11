@@ -102,7 +102,7 @@ def get_available_moves(board, player):
 
 
 ######################main ###########################
-print('initial board layout is ', board)
+print('initial board layout is ', board,'\n')
 
 
 while count < MAX_TRIES:
