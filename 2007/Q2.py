@@ -48,10 +48,15 @@ def get_available_moves(board, player):
         # find every instance of player and swap with putahi
         for i in range(8):
             if kawai[i] == player:
-                valid_move = player + kawai[:i] + 'E' + kawai[i+1:]
-                available_moves.append(valid_move)
+                #check that i is not between 2 player markers
+                p_left = i -1
+                p_right = i +1
+                if p_right > 7: p_right = 0
+                if not (kawai[p_left] == player and kawai[p_right] == player):
+                    valid_move = player + kawai[:i] + 'E' + kawai[i+1:]
+                    available_moves.append(valid_move)
 
-                print('get_available_moves: putahi was E:',valid_move, len(valid_move))
+                    print('get_available_moves: putahi was E:',valid_move, len(valid_move))
 
 
     # if E is in kawai, then move can be made from posns next to E, and from puthai
