@@ -56,7 +56,7 @@ def get_available_moves(board, player):
                     valid_move = player + kawai[:i] + 'E' + kawai[i+1:]
                     available_moves.append(valid_move)
 
-                    print('get_available_moves: putahi was E:',valid_move, len(valid_move))
+                    #print('get_available_moves: putahi was E:',valid_move, len(valid_move))
 
 
     # if E is in kawai, then move can be made from posns next to E, and from puthai
@@ -69,12 +69,12 @@ def get_available_moves(board, player):
             valid_move = putahi + kawai[:left] + 'E' + player + kawai[empty+1:]
             available_moves.append(valid_move)
 
-            print('get_available_moves: left, empty > 0:',valid_move, len(valid_move))
+            #print('get_available_moves: left, empty > 0:',valid_move, len(valid_move))
         elif empty == 0 and kawai[left] == player:
             valid_move = putahi + player + kawai[empty+1:left] + 'E'
             available_moves.append(valid_move)
 
-            print('get_available_moves: left, empty = 0:',valid_move, len(valid_move))
+            #print('get_available_moves: left, empty = 0:',valid_move, len(valid_move))
 
         # from the right...
         right = empty + 1
@@ -83,19 +83,19 @@ def get_available_moves(board, player):
             valid_move = putahi + kawai[:empty] + player + 'E' + kawai[right+1:]
             available_moves.append(valid_move)
 
-            print('get_available_moves: right, empty > 0:',valid_move, len(valid_move))
+            #print('get_available_moves: right, empty > 0:',valid_move, len(valid_move))
         elif empty == 7 and kawai[right] == player:
             valid_move = putahi + 'E' + kawai[right+1:empty] + player
             available_moves.append(valid_move)
 
-            print('get_available_moves: right, empty = 0:',valid_move, len(valid_move))
+            #print('get_available_moves: right, empty = 0:',valid_move, len(valid_move))
         
         # from the centre...
         if putahi == player:
             valid_move = 'E' + kawai[:empty] + player + kawai[empty+1:]
             available_moves.append(valid_move)
 
-            print('get_available_moves: putahi is player:',valid_move, len(valid_move))
+            #print('get_available_moves: putahi is player:',valid_move, len(valid_move))
             
     return available_moves
 
@@ -108,23 +108,41 @@ print('initial board layout is ', board,'\n')
 while count < MAX_TRIES:
     if check_win(board, player):
         break
-    else: print(f'No winner: {player} has {board}')
+    else: print(f'\nRound {count}: {player} has {board}')
     # player takes a turn
 
 
     options = get_available_moves(board, player)
     print(f'options for {player} are',options)
     if options:
-    #TODO - apply turn taking rules: 
-    #1. If there is a move which means my opponent will then lose, this move is played. If several such moves exist,
-    #choose the one that uses the leftmost of my markers.
-    #2. If the first rule does not indicate which move to take and there are moves, after which my opponent will be
-    #able to make a move meaning that I will then lose, those moves are to be avoided (by moving the leftmost of
-    #my markers that avoids these moves). If it is not possible to avoid such a move, move the leftmost of my
-    #markers.
-    #3. If the previous rules do not indicate which move to take, move the leftmost of my markers.
-
-        board = options[0]
+        # keep scoore, and if current option > score then choose this option
+        move_score = -1     # -1:lose, 0:draw, 1:win
+        #3. If the previous rules do not indicate which move to take, move the leftmost of my markers.
+        board = options[0]  # this is the default so we don't leave empty handed
+        #1. If there is a move which means my opponent will then lose, this move is played. If several such moves exist,
+        #choose the one that uses the leftmost of my markers.
+        for try_move in options:
+            if check_win(try_move, player) and move_score < 1:
+                print(f'options: player {player} found a winner!! chose {try_move}')
+                board = try_move
+                move_score = 1
+            elif move_score < 1:
+                #2. If the first rule does not indicate which move to take and there are moves, after which my opponent will be
+                #able to make a move meaning that I will then lose, those moves are to be avoided (by moving the leftmost of
+                #my markers that avoids these moves). If it is not possible to avoid such a move, move the leftmost of my
+                #markers.
+                opp_options = get_available_moves(try_move, opponent)
+                print(f'\toptions: {try_move} opponent options for {opponent} are',opp_options)
+                for try_opp_move in opp_options:
+                    if check_win(try_opp_move, opponent):
+                        print(f'\t\tWATCH OUT!, {opponent} could win with {try_opp_move}')
+                        break
+                    if not check_win(try_opp_move, opponent) and move_score < 0:
+                        print(f'\t\topp_options: {player} choosing drawing move {try_move} ')
+                        board = try_move
+                        move_score = 0
+                    else:
+                        print(f'\thow did we get here? {player} move {try_move}, opponent move {try_opp_move}, move score = {move_score}')
 
     player, opponent = swap_player(player)
 
