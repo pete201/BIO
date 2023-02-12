@@ -5,10 +5,14 @@ debug = True
 
 if debug:
     board = 'EOOOOXXXX'
-    #board = 'oeooxxxxo'    # O wins
-    #board = 'xxexooxxx'    # X wins
-    #board = 'ooxoxexox'    # O in putahi, not winner
-    #board = 'xxoxoeoxo'    # O in putahi, not winner
+    board = 'XXEXOOOXO'     # test 1
+    board = 'EOOOOXXXX'     # test 2
+    board = 'OEXXOOOXX'     # test 3
+    board = 'EXXXXOOOO'     # test 4
+    board = 'XEOXXXOOO'     # test 5
+    #board = 'OOEXOOXXX'     # test 6 - fail
+    #board = 'EXOXOXXOO'     # test 7
+
     board = board.upper()
 else:
     input_string = input('Enter valid start posn (e.g. EOOOOXXXX)')
@@ -17,7 +21,7 @@ else:
 # initial condition
 player = 'O'
 opponent = 'X'
-MAX_TRIES = 20
+MAX_TRIES = 99
 count = 0
 
 def swap_player(player):
@@ -153,5 +157,5 @@ while count < MAX_TRIES:
     
 
 if count < MAX_TRIES:
-    print(f'{player} wins in {count} with board {board}')
+    print(f'\n{player} wins in {count} with board {board}\n')
 else: print('Its a draw - try again')
