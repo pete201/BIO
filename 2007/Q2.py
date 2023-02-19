@@ -4,13 +4,12 @@
 debug = True
 
 if debug:
-    board = 'EOOOOXXXX'
     board = 'XXEXOOOXO'     # test 1
-    board = 'EOOOOXXXX'     # test 2
-    board = 'OEXXOOOXX'     # test 3
-    board = 'EXXXXOOOO'     # test 4
-    board = 'XEOXXXOOO'     # test 5
-    #board = 'OOEXOOXXX'     # test 6 - fail
+    #board = 'EOOOOXXXX'     # test 2
+    #board = 'OEXXOOOXX'     # test 3
+    #board = 'EXXXXOOOO'     # test 4
+    #board = 'XEOXXXOOO'     # test 5
+    #board = 'OOEXOOXXX'     # test 6 - fail.  I draw where result should be p2 wins
     #board = 'EXOXOXXOO'     # test 7
 
     board = board.upper()
@@ -21,7 +20,7 @@ else:
 # initial condition
 player = 'O'
 opponent = 'X'
-MAX_TRIES = 99
+MAX_TRIES = 69
 count = 0
 
 def swap_player(player):

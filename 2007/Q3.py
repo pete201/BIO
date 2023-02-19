@@ -1,7 +1,7 @@
 """string rewriting
 8pm fri 17th"""
 
-debug = False
+debug = True
 
 # first input 2 lines:
 # a three letter string (where each letter will be A, B, C, D or E),
@@ -11,9 +11,9 @@ debug = False
 
 
 if debug:
-    in_string = 'EEE'
-    steps = 29
-    position = 10
+    in_string = 'A'
+    steps = 8
+    position = 1000
 else:
     in_string = input('Enter input characters: ')
     in_string = in_string.upper()
@@ -53,7 +53,7 @@ def main():
         for letter in in_string:
             output += mutate(letter)
 
-        if debug: print(f'step {step} output is: {output}')
+        #if debug: print(f'step {step} output is: {output}')
         # truncation of in_string is necessary so that counts of 29 return in <2s
         in_string = output[:position]
     

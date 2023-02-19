@@ -3,7 +3,7 @@
 debug = False
 
 def rule1(deck):
-    '''a point for all permutations of identical numerical values'''
+    '''a point for all combinations of identical numerical values'''
     points = 0
     for index,value in enumerate(deck):
         for compare in deck[index+1:]:
@@ -13,7 +13,7 @@ def rule1(deck):
 
 
 def rule2(deck, target):
-    '''a point for all permutations of cards summing 15'''
+    '''a point for all combinations of cards summing 15'''
     total = 0
     for index,value in enumerate(deck):
         if value == target:
