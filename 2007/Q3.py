@@ -1,20 +1,24 @@
 """string rewriting
 8pm fri 17th"""
 
-debug = True
+debug = False
 
 # first input 2 lines:
 # a three letter string (where each letter will be A, B, C, D or E),
 # 2 integers - 
-# The first integer s indicating the number of rewriting steps 
-# the second p indicating a position.
+# The first integer indicating the number of rewriting steps 
+# the second indicating a position.
 
-# WORKS UNTIL s >= 29, then takes way more than 2s so fail!!
 
 if debug:
-    input = 'EEE'
+    in_string = 'EEE'
     steps = 29
     position = 10
+else:
+    in_string = input('Enter input characters: ')
+    in_string = in_string.upper()
+    steps = int(input('Enter steps: '))
+    position = int(input('Enter position: '))
 
 def mutate(in_char):
     out_char = in_char
@@ -39,18 +43,19 @@ def count(char, string):
     return string.count(char)
 
 def main():
-    global input
+    global in_string
     chars = 'ABCDE'
-    print(f'input sting was {input}')
+    print(f'input sting: {in_string}, steps: {steps}, position: {position}')
     
 
     for step in range(steps):
         output = ''
-        for letter in input:
+        for letter in in_string:
             output += mutate(letter)
 
-        print(f'step {step} output is: {output}')
-        input = output
+        if debug: print(f'step {step} output is: {output}')
+        # truncation of in_string is necessary so that counts of 29 return in <2s
+        in_string = output[:position]
     
     # truncate to p characters
     output = output[:position]
