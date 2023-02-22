@@ -60,16 +60,12 @@ class rotor():
         #print(f'rotor_turn: left_offset = {self.left_offset}, right_offset = {self.right_offset}')
         return
 
-class reflector():
-    '''input translates to output'''
-    def __init__(self) -> None:
-        '''Only one static reflector, so set up here'''
-        self.offset = [3, 1, -1, -3]
 
-    def reflect(self, char_in):
-        index = PORTS.find(char_in)
-        translation = (index + self.offset[index])
-        return PORTS[translation]
+def reflector(char_in):
+    offset = [3, 1, -1, -3]
+    index = PORTS.find(char_in)
+    translation = (index + offset[index])
+    return PORTS[translation]
 
 
 def main():
@@ -78,7 +74,6 @@ def main():
 
     rotor1 = rotor(0, 2, -1, -1)
     rotor2 = rotor(0, 1, -1, 0)
-    reflector1 = reflector()
         
     for char in word:
         rotor1.turn(encrypted_letters)
@@ -87,7 +82,7 @@ def main():
 
         step1 = rotor1.left_port(char)
         step2 = rotor2.left_port(step1)
-        step3 = reflector1.reflect(step2)
+        step3 = reflector(step2)
         step4 = rotor2.right_port(step3)
         step5 = rotor1.right_port(step4)
         #print(f'{char} becomes {step5}')
