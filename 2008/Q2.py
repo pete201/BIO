@@ -18,21 +18,32 @@ if debug:
 class rotor():
     '''rotates offset after each use'''
 
-    
+    PORTS = 'ABCD'
 
     def __init__(self, off0, off1, off2, off3) -> None:
         '''set up the rotors offsets which are unique to each rotor'''
         self.left_offset = [off0, off1, off2, off3]
-        self.port = 'ABCD'
         self.rotate_counter = 0
+        # set up right hand side based on LHS
+        # basis is that LH_index+LtoR_value = RH_index
+        # and now RtoL_value at RH-index = -LtoR_value
+        # e.g. B=1, left_offset[1] = 1 : RH = 2 = C
+        # so C = 2 has RtoL_value of -1
+        self.right_offset = [0,0,0,0]
+        for index, value in enumerate(self.left_offset):
+            RH_index = (index + value)%4
+            self.right_offset[RH_index] = -value       
+        #print(f'rotor_init: left_offset = {self.left_offset}, right_offset = {self.right_offset}')
+
+
     
     def left_port(self, char_in):
         '''reads an input on left and outputs right port'''
-        index = self.port.find(char_in)
+        index = rotor.PORTS.find(char_in)
         translation = index + self.left_offset[index]
         if translation > 3:
             translation -= 4
-        return self.port[translation]
+        return rotor.PORTS[translation]
 
     def right_port(self):
         '''reads an input on right and outputs left port'''
