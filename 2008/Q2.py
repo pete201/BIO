@@ -1,13 +1,4 @@
-'''Enigma machine'''
-
-'''
-use class for rotors:
-    Left port (input), + offset = right port (output)
-    has 'turn' method which rotates the offset
-    class has a rotate counter which is used to rotate next rotor
-and a class for reflector:
-    input translates to output
-'''
+'''Enigma machine https://www.olympiad.org.uk/papers/2008/bio/bio08-exam.pdf Q2'''
 
 debug = False
 PORTS = 'ABCD'
@@ -17,7 +8,7 @@ if debug:
     word = 'AAABBB'
 else:
     encrypted_letters = int(input('enter # letters already encrypted: '))
-    word = str(input('enter word to be encrypted: '))
+    word = input('enter word to be encrypted: ')
     word = word.upper()
 
 class rotor():
