@@ -1,7 +1,7 @@
 '''Enigma machine https://www.olympiad.org.uk/papers/2008/bio/bio08-exam.pdf Q2'''
 
-debug = False
-PORTS = 'ABCD'
+debug = True
+PORTS = 'ABCDEF'
 
 if debug:
     encrypted_letters = 14
@@ -33,18 +33,18 @@ class rotor():
     def left_port(self, char_in):
         '''reads an input on left and outputs right port'''
         index = PORTS.find(char_in)
-        translation = (index + self.left_offset[index])%4
+        translation = (index + self.left_offset[index])%4#len(PORTS)
         return PORTS[translation]
 
     def right_port(self, char_in):
         '''reads an input on right and outputs left port'''
         index = PORTS.find(char_in)
-        translation = (index + self.right_offset[index])%4
+        translation = (index + self.right_offset[index])%4#len(PORTS)
         return PORTS[translation]
 
     def turn(self, n):
         '''rotates both the right and left port translations'''
-        n = n%4
+        n = n%len(PORTS)
         # note that we always calculate from the static '_ref' arrays
         self.left_offset = self.left_offset_ref[n:] + self.left_offset_ref[:n]
         self.right_offset = self.right_offset_ref[n:] + self.right_offset_ref[:n] 
@@ -57,6 +57,12 @@ def reflector(char_in):
     index = PORTS.find(char_in)
     translation = (index + offset[index])
     return PORTS[translation]
+
+def create_reflector():
+    reflector_offset = []
+    for n in range(len(PORTS)):
+        reflector_offset.append(len(PORTS) - 1 -(n*2))
+    return reflector_offset
 
 
 def main():
@@ -82,6 +88,9 @@ def main():
         encrypted_letters += 1
 
     print(f'encrypted word is: {encrypted_word}')
+
+    reflector_offset = create_reflector()
+    print(f'reflector offset array = {reflector_offset}')
 
 
 if __name__ == '__main__':
