@@ -1,7 +1,7 @@
 '''Enigma machine https://www.olympiad.org.uk/papers/2008/bio/bio08-exam.pdf Q2'''
 
 debug = True
-PORTS = 'ABCDEF'
+PORTS = 'ABCD'
 
 if debug:
     encrypted_letters = 14
@@ -33,13 +33,13 @@ class rotor():
     def left_port(self, char_in):
         '''reads an input on left and outputs right port'''
         index = PORTS.find(char_in)
-        translation = (index + self.left_offset[index])%4#len(PORTS)
+        translation = (index + self.left_offset[index])%len(PORTS)
         return PORTS[translation]
 
     def right_port(self, char_in):
         '''reads an input on right and outputs left port'''
         index = PORTS.find(char_in)
-        translation = (index + self.right_offset[index])%4#len(PORTS)
+        translation = (index + self.right_offset[index])%len(PORTS)
         return PORTS[translation]
 
     def turn(self, n):
@@ -51,12 +51,18 @@ class rotor():
         #print(f'rotor_turn: left_offset = {self.left_offset}, right_offset = {self.right_offset}')
         return
 
+class reflector():
+    '''simple fixed translation of letters'''
+    def __init__(self) -> None:
+        self.reflector_offset = []
+        if not len(PORTS)%2:
+            for n in range(len(PORTS)):
+                self.reflector_offset.append(len(PORTS) - 1 -(n*2))
 
-def reflector(char_in):
-    offset = [3, 1, -1, -3]
-    index = PORTS.find(char_in)
-    translation = (index + offset[index])
-    return PORTS[translation]
+    def reflect(self, char_in):
+        index = PORTS.find(char_in)
+        translation = (index + self.reflector_offset[index])
+        return PORTS[translation]
 
 def create_reflector():
     reflector_offset = []
@@ -71,6 +77,7 @@ def main():
 
     rotor1 = rotor(0, 2, -1, -1)
     rotor2 = rotor(0, 1, -1, 0)
+    reflector1 = reflector()
         
     for char in word:
         rotor1.turn(encrypted_letters)
@@ -79,7 +86,7 @@ def main():
 
         step1 = rotor1.left_port(char)
         step2 = rotor2.left_port(step1)
-        step3 = reflector(step2)
+        step3 = reflector1.reflect(step2)
         step4 = rotor2.right_port(step3)
         step5 = rotor1.right_port(step4)
         #print(f'{char} becomes {step5}')
@@ -89,8 +96,7 @@ def main():
 
     print(f'encrypted word is: {encrypted_word}')
 
-    reflector_offset = create_reflector()
-    print(f'reflector offset array = {reflector_offset}')
+
 
 
 if __name__ == '__main__':
