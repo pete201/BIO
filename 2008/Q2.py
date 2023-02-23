@@ -1,7 +1,7 @@
 '''Enigma machine https://www.olympiad.org.uk/papers/2008/bio/bio08-exam.pdf Q2'''
 
-debug = True
-PORTS = 'ABCD'
+debug = False
+PORTS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ .'
 
 if debug:
     encrypted_letters = 14
@@ -25,9 +25,9 @@ class rotor():
         # and now RtoL_value at RH-index = -LtoR_value
         # e.g. B=1, left_offset[1] = 1 : RH = 2 = C
         # so C = 2 has RtoL_value of -1
-        self.right_offset_ref = [0,0,0,0]
+        self.right_offset_ref = [0] * len(self.left_offset_ref)
         for index, value in enumerate(self.left_offset):
-            RH_index = (index + value)%4
+            RH_index = (index + value)%len(self.left_offset)
             self.right_offset_ref[RH_index] = -value   
         self.right_offset = self.right_offset_ref  
         #print(f'rotor_init: left_offset = {self.left_offset}, right_offset = {self.right_offset}')
@@ -77,8 +77,8 @@ def main():
     global encrypted_letters
     encrypted_word = ''
 
-    rotor1 = rotor(0, 2, -1, -1)
-    rotor2 = rotor(0, 1, -1, 0)
+    rotor1 = rotor(25, 20, 24, 15, 5, 11, -5, -5, 15, -4, 3, -4, -9, -5, 3, 5, 3, -17, -4, -15, -14, 3, 5, -8, -14, -13, -4, -16)
+    rotor2 = rotor(24, 26, 6, 6, 1, 10, -5, 10, 2, -2, -6, -9, 10, -2, 11, -3, 3, 9, -5, -5, 3, -15, -1, -3, -6, -25, -23, -11)
     reflector1 = reflector()
         
     for char in word:
