@@ -14,9 +14,11 @@ else:
 class rotor():
     '''offsets input character in both left-right and right-left directions'''
 
-    def __init__(self, off0, off1, off2, off3) -> None:
+    def __init__(self, *args) -> None:
         '''set up the rotors offsets which are unique to each rotor'''
-        self.left_offset_ref = [off0, off1, off2, off3]
+        self.left_offset_ref = []
+        for arg in args:
+            self.left_offset_ref.append(arg)
         self.left_offset = self.left_offset_ref
         # set up right hand side based on LHS. 
         # basis is that LH_index + LtoR_value = RH_index
