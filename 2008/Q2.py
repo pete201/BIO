@@ -69,20 +69,24 @@ class enigma():
         # Note, new reflectors can be created using the helper file
         self.rotor1 = rotor(25, 20, 24, 15, 5, 11, -5, -5, 15, -4, 3, -4, -9, -5, 3, 5, 3, -17, -4, -15, -14, 3, 5, -8, -14, -13, -4, -16)
         self.rotor2 = rotor(24, 26, 6, 6, 1, 10, -5, 10, 2, -2, -6, -9, 10, -2, 11, -3, 3, 9, -5, -5, 3, -15, -1, -3, -6, -25, -23, -11)
+        self.rotor3 = rotor(20, 8, 19, 20, 23, 5, -4, -1, 9, -2, -2, 4, 1, -1, -3, 1, -11, -14, 4, -1, -16, -7, 3, 1, -5, 1, -26, -26)
         self.reflector1 = reflector()
 
     def encrypt_letter(self, letter, no_encrypted_letters):
         self.rotor1.turn(no_encrypted_letters)
         # turns for second rotor is 'integer-divide' num_encrypted_letters
         self.rotor2.turn(no_encrypted_letters//len(PORTS))
+        self.rotor3.turn(no_encrypted_letters//len(PORTS)//len(PORTS))
 
         step1 = self.rotor1.left_port(letter)
         step2 = self.rotor2.left_port(step1)
-        step3 = self.reflector1.reflect(step2)
-        step4 = self.rotor2.right_port(step3)
-        step5 = self.rotor1.right_port(step4)
+        step3 = self.rotor3.left_port(step2)
+        step4 = self.reflector1.reflect(step3)
+        step5 = self.rotor3.right_port(step4)
+        step6 = self.rotor2.right_port(step5)
+        step7 = self.rotor1.right_port(step6)
         #print(f'{char} becomes {step5}')
-        return step5
+        return step7
 
 
 def main():
