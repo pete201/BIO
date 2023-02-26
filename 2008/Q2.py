@@ -1,19 +1,16 @@
 '''Enigma machine https://www.olympiad.org.uk/papers/2008/bio/bio08-exam.pdf Q2'''
 
 debug = False
-PORTS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ .'
 
-if debug:
-    encrypted_letters = 14
-    word = 'AAABBB'
-else:
-    encrypted_letters = int(input('enter # letters already encrypted: '))
-    word = input('enter word to be encrypted: ')
-    word = word.upper()
+# define PORTS to be all the available characters on our enigma keyboard
+PORTS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ .'
+if len(PORTS)%2:
+    print('PORTS must have an even number of characters. Quitting')
+    exit()
+
 
 class rotor():
     '''offsets input character in both left-right and right-left directions'''
-
     def __init__(self, *args) -> None:
         '''set up the rotors offsets which are unique to each rotor'''
         self.left_offset_ref = []
@@ -66,39 +63,44 @@ class reflector():
         translation = (index + self.reflector_offset[index])
         return PORTS[translation]
 
-def create_reflector():
-    reflector_offset = []
-    for n in range(len(PORTS)):
-        reflector_offset.append(len(PORTS) - 1 -(n*2))
-    return reflector_offset
+
+class enigma():
+    def __init__(self) -> None:
+        # Note, new reflectors can be created using the helper file
+        self.rotor1 = rotor(25, 20, 24, 15, 5, 11, -5, -5, 15, -4, 3, -4, -9, -5, 3, 5, 3, -17, -4, -15, -14, 3, 5, -8, -14, -13, -4, -16)
+        self.rotor2 = rotor(24, 26, 6, 6, 1, 10, -5, 10, 2, -2, -6, -9, 10, -2, 11, -3, 3, 9, -5, -5, 3, -15, -1, -3, -6, -25, -23, -11)
+        self.reflector1 = reflector()
+
+    def encrypt_letter(self, letter, no_encrypted_letters):
+        self.rotor1.turn(no_encrypted_letters)
+        # turns for second rotor is 'integer-divide' num_encrypted_letters
+        self.rotor2.turn(no_encrypted_letters//len(PORTS))
+
+        step1 = self.rotor1.left_port(letter)
+        step2 = self.rotor2.left_port(step1)
+        step3 = self.reflector1.reflect(step2)
+        step4 = self.rotor2.right_port(step3)
+        step5 = self.rotor1.right_port(step4)
+        #print(f'{char} becomes {step5}')
+        return step5
 
 
 def main():
-    global encrypted_letters
+    my_enigma = enigma()
+
+    if debug:
+        num_encrypted_letters = 14
+        word = 'AAABBB'
+    else:
+        num_encrypted_letters = int(input('enter number of letters already encrypted: '))
+        word = input('enter word to be encrypted: ')
+        word = word.upper()
+
     encrypted_word = ''
-
-    rotor1 = rotor(25, 20, 24, 15, 5, 11, -5, -5, 15, -4, 3, -4, -9, -5, 3, 5, 3, -17, -4, -15, -14, 3, 5, -8, -14, -13, -4, -16)
-    rotor2 = rotor(24, 26, 6, 6, 1, 10, -5, 10, 2, -2, -6, -9, 10, -2, 11, -3, 3, 9, -5, -5, 3, -15, -1, -3, -6, -25, -23, -11)
-    reflector1 = reflector()
-        
     for char in word:
-        rotor1.turn(encrypted_letters)
-        # turns for second rotor is 'integer-divide' encrypted_letters
-        rotor2.turn(encrypted_letters//4)
-
-        step1 = rotor1.left_port(char)
-        step2 = rotor2.left_port(step1)
-        step3 = reflector1.reflect(step2)
-        step4 = rotor2.right_port(step3)
-        step5 = rotor1.right_port(step4)
-        #print(f'{char} becomes {step5}')
-        encrypted_word += step5
-
-        encrypted_letters += 1
-
+        encrypted_word += my_enigma.encrypt_letter(char, num_encrypted_letters)
+        num_encrypted_letters += 1
     print(f'encrypted word is: {encrypted_word}')
-
-
 
 
 if __name__ == '__main__':
