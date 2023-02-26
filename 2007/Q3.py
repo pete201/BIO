@@ -1,5 +1,4 @@
-"""string rewriting
-8pm fri 17th"""
+"""string rewriting"""
 
 debug = True
 
