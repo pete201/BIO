@@ -40,6 +40,12 @@ def check_win(board, player):
 
 def get_available_moves(board, player):
     '''returns a list of board results after move'''
+
+#NOTE this strategy does not work!  it does not find the left most position. 
+# need to step through each of the player markers in turn and find available moves.
+# only test that fails is test 6, but it is because i don't take left most marker
+# when E is in Kawai position 0 (selects player marker position 7)
+
     # only one empty space, so player must move into E
     putahi = board[0]
     kawai = board[1:]
