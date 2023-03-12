@@ -29,7 +29,6 @@ def swap_player(player):
     else: 
         return 'O', 'X'
 
-
 def check_win(board, player):
     # to win player must occupy putahi (centre) and sequence P-E-P in kawai
     putahi = board[0]
@@ -58,9 +57,7 @@ def get_available_moves(board, player):
                 if not (kawai[p_left] == player and kawai[p_right] == player):
                     valid_move = player + kawai[:i] + 'E' + kawai[i+1:]
                     available_moves.append(valid_move)
-
                     #print('get_available_moves: putahi was E:',valid_move, len(valid_move))
-
 
     # if E is in kawai, then move can be made from posns next to E, and from puthai
     else:
@@ -71,12 +68,10 @@ def get_available_moves(board, player):
         if empty > 0 and kawai[left] == player:
             valid_move = putahi + kawai[:left] + 'E' + player + kawai[empty+1:]
             available_moves.append(valid_move)
-
             #print('get_available_moves: left, empty > 0:',valid_move, len(valid_move))
         elif empty == 0 and kawai[left] == player:
             valid_move = putahi + player + kawai[empty+1:left] + 'E'
             available_moves.append(valid_move)
-
             #print('get_available_moves: left, empty = 0:',valid_move, len(valid_move))
 
         # from the right...
@@ -97,24 +92,19 @@ def get_available_moves(board, player):
         if putahi == player:
             valid_move = 'E' + kawai[:empty] + player + kawai[empty+1:]
             available_moves.append(valid_move)
-
             #print('get_available_moves: putahi is player:',valid_move, len(valid_move))
-            
     return available_moves
-
 
 
 ######################main ###########################
 print('initial board layout is ', board,'\n')
 
-
 while count < MAX_TRIES:
     if check_win(board, player):
         break
     else: print(f'\nRound {count}: {player} has {board}')
+
     # player takes a turn
-
-
     options = get_available_moves(board, player)
     print(f'options for {player} are',options)
     if options:
@@ -146,14 +136,9 @@ while count < MAX_TRIES:
                         move_score = 0
                     else:
                         print(f'\thow did we get here? {player} move {try_move}, opponent move {try_opp_move}, move score = {move_score}')
-
     player, opponent = swap_player(player)
 
-    
-
     count += 1
-
-    
 
 if count < MAX_TRIES:
     print(f'\n{player} wins in {count} with board {board}\n')
