@@ -1,6 +1,6 @@
 # sort shirts on a line
-# works but not very well.  does not find every sort
-# e.g. 5674321 is not found within 100 moves (should take 14)
+# works but not very well.  finds every sort
+# but some take hundreds of moves
 
 debug = True
 max_count = 1000
