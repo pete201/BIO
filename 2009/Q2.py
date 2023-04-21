@@ -4,17 +4,18 @@ debug = False
 
 class Grid():
     '''4 by 4 playing grid'''
+    all_tiles = [0, 1, 2, 3, 4, 5, 6 ,7, 8, 9, 10, 11, 12, 13, 14, 15]
     
     def __init__(self) -> None:
-        self.all_tiles = [0, 1, 2, 3, 4, 5, 6 ,7, 8, 9, 10, 11, 12, 13, 14, 15]
-        self.available = self.all_tiles
+        
+        self.available = [] + Grid.all_tiles
         self.stack0 = list('GRGR')
         self.stack1 = list('BRRR')
         self.stack2 = list('RGBG')
         self.stack3 = list('BBGB')
         self.stacks = [self.stack0, self.stack1, self.stack2, self.stack3]
         self.index = [0] * 4
-        self.tiles = ['e'] *16
+        self.tiles = [' '] *16
         self.matched_tiles = []
 
     def fill_from_stack(self, column):
@@ -34,10 +35,10 @@ class Grid():
     def fill_grid(self):
         '''fills empty spaces in the grid and resets available tiles'''
         self.available.clear()
-        for item in self.all_tiles:
-            self.available.append(item)
+        self.available += Grid.all_tiles
+
         for t in range (15, 0, -1):
-            while self.tiles[t] == 'e':
+            while self.tiles[t] == ' ':
                 self.fill_from_above(t)
         return
     
@@ -95,7 +96,7 @@ class Grid():
     
     def remove_sets(self):
         for tile in self.matched_tiles:
-            self.tiles[tile] = 'e'
+            self.tiles[tile] = ' '
         return
   
     def __str__(self) -> str:
@@ -122,8 +123,7 @@ print(score)
 
 # remove matched tiles
 myGrid.remove_sets()
-print(myGrid)
-
+#print(myGrid)
 
 print('second round...')
 myGrid.fill_grid()
@@ -138,4 +138,8 @@ print(score)
 
 # remove matched tiles
 myGrid.remove_sets()
+#print(myGrid)
+
+print('third round...')
+myGrid.fill_grid()
 print(myGrid)
