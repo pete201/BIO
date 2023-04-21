@@ -14,14 +14,14 @@ class Grid():
         self.stack2 = list('RGBG')
         self.stack3 = list('BBGB')
         self.stacks = [self.stack0, self.stack1, self.stack2, self.stack3]
-        self.index = [0] * 4
+        self.stack_index = [0] * 4
         self.tiles = [' '] *16
         self.matched_tiles = []
 
     def fill_from_stack(self, column):
         '''fills grid tiles from the stack above the grid'''
-        result = self.stacks[column][self.index[column]]
-        self.index[column] = (self.index[column] + 1) % 4
+        result = self.stacks[column][self.stack_index[column]]
+        self.stack_index[column] = (self.stack_index[column] + 1) % 4
         return result
     
     def fill_from_above(self, tile):
