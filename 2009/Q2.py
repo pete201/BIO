@@ -24,10 +24,10 @@ class Grid():
     
     def fill_from_above(self, tile):
         '''fills a tile with the value of the tile directly above it'''
-        if tile > 3:
-            self.tiles[tile] = self.tiles[tile-4]
-            self.fill_from_above(tile-4)
-        else: self.tiles[tile] = self.fill_from_stack(tile%4)
+        while tile > 3:
+            self.tiles[tile] = self.tiles[tile - 4]
+            tile -= 4
+        self.tiles[tile] = self.fill_from_stack(tile % 4)
         return
     
     def fill_grid(self):
@@ -43,7 +43,7 @@ class Grid():
     def look_left(self, tile):
         '''return tile number for matching tile, else -1'''
         result = -1
-        if tile % 4 > 0:
+        if tile % 4 != 0:
             if self.tiles[tile] == self.tiles[tile -1] and (tile -1) in self.available:
                 result = tile -1
         return result
@@ -59,7 +59,7 @@ class Grid():
     def look_up(self, tile):
         '''return tile number for matching tile, else -1'''
         result = -1
-        if tile // 4 > 0:
+        if tile // 4 != 0:
             if self.tiles[tile] == self.tiles[tile -4] and (tile -4) in self.available:
                 result = tile -4
         return result
@@ -106,43 +106,32 @@ class Grid():
         return result
     
 if debug:
-    rows = ['GRGR', 'BRRR', 'RGBG', 'BBGB']
-    number_rounds = 1
+    rows = ['RRGB', 'GRBG', 'RRGB', 'GBRB']
+    number_rounds = 2
 else:
-    rows = list(input("enter next row: ") for _ in range(4))
-    number_rounds = input('enter number of rounds')
+    rows = list(input("enter next row: ").upper() for _ in range(4))
+    number_rounds = int(input('enter number of rounds: '))
+# reverse the rows order before constructing grid since row 0 is at bottom
+rows.reverse()
 
 myGrid = Grid(rows)
 myGrid.fill_grid()
-print(f'original grid: {myGrid}')
 
-#for n in range(number_rounds):
-groups = myGrid.find_sets()
-score = 1
-for each in groups:
-    score = score * each
-if score == 1: score = 0
-print(score)
-
-# remove matched tiles
-myGrid.remove_sets()
-#print(myGrid)
-
-print('second round...')
-myGrid.fill_grid()
-print(myGrid)
-
-groups = myGrid.find_sets()
-score = 1
-for each in groups:
-    score = score * each
-if score == 1: score = 0
-print(score)
-
-# remove matched tiles
-myGrid.remove_sets()
-#print(myGrid)
-
-print('third round...')
-myGrid.fill_grid()
-print(myGrid)
+total = 0
+for n in range(number_rounds):
+    groups = myGrid.find_sets()
+    if len(groups) < 1:
+        print()
+        print('GAME OVER')
+        break
+    score = 1
+    for each in groups:
+        score = score * each
+    if score == 1: score = 0
+    # remove matched tiles
+    myGrid.remove_sets()
+    total += score
+    myGrid.fill_grid()
+    
+print(f'grid: {myGrid}')
+print(total)
