@@ -1,19 +1,17 @@
 '''coloured tiles in a 4 by 4 grid'''
 
-debug = False
+debug = True
 
 class Grid():
     '''4 by 4 playing grid'''
     all_tiles = [0, 1, 2, 3, 4, 5, 6 ,7, 8, 9, 10, 11, 12, 13, 14, 15]
     
-    def __init__(self) -> None:
+    def __init__(self, rows) -> None:
         
         self.available = [] + Grid.all_tiles
-        self.stack0 = list('GRGR')
-        self.stack1 = list('BRRR')
-        self.stack2 = list('RGBG')
-        self.stack3 = list('BBGB')
-        self.stacks = [self.stack0, self.stack1, self.stack2, self.stack3]
+        cols = [rows[0][n] + rows[1][n] + rows[2][n] + rows[3][n] for n in range(4)]
+        self.stacks = [list(cols[0]), list(cols[1]), list(cols[2]), list(cols[3])]
+
         self.stack_index = [0] * 4
         self.tiles = [' '] *16
         self.matched_tiles = []
@@ -46,7 +44,7 @@ class Grid():
         '''return tile number for matching tile, else -1'''
         result = -1
         if tile % 4 > 0:
-            if self.tiles[tile] == self.tiles[tile -1] and (tile - 1) in self.available:
+            if self.tiles[tile] == self.tiles[tile -1] and (tile -1) in self.available:
                 result = tile -1
         return result
     
@@ -54,7 +52,7 @@ class Grid():
         '''return tile number for matching tile, else -1'''
         result = -1
         if tile % 4 < 3:
-            if self.tiles[tile] == self.tiles[tile +1] and (tile + 1) in self.available:
+            if self.tiles[tile] == self.tiles[tile +1] and (tile +1) in self.available:
                 result = tile +1
         return result
     
@@ -107,18 +105,23 @@ class Grid():
             result = result + each
         return result
     
+if debug:
+    rows = ['GRGR', 'BRRR', 'RGBG', 'BBGB']
+    number_rounds = 1
+else:
+    rows = list(input("enter next row: ") for _ in range(4))
+    number_rounds = input('enter number of rounds')
 
-myGrid = Grid()
+myGrid = Grid(rows)
 myGrid.fill_grid()
-
 print(f'original grid: {myGrid}')
 
-#print(myGrid.find_sets())
+#for n in range(number_rounds):
 groups = myGrid.find_sets()
 score = 1
 for each in groups:
     score = score * each
-if score == 1: score =0
+if score == 1: score = 0
 print(score)
 
 # remove matched tiles
@@ -133,7 +136,7 @@ groups = myGrid.find_sets()
 score = 1
 for each in groups:
     score = score * each
-if score == 1: score =0
+if score == 1: score = 0
 print(score)
 
 # remove matched tiles
